@@ -1,0 +1,39 @@
+@model BusinessObjects.Models.NewsArticle
+
+@{
+    ViewData["Title"] = Model.NewsTitle;
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-body">
+                    <h1 class="card-title">@Model.NewsTitle</h1>
+                    <h6 class="card-subtitle mb-3 text-muted">@Model.Headline</h6>
+                    
+                    <div class="mb-3">
+                        <small class="text-muted">
+                            Published on: @Model.CreatedDate?.ToString("dd/MM/yyyy HH:mm")
+                        </small>
+                    </div>
+
+                    <div class="card-text">
+                        @Model.NewsContent
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(Model.NewsSource))
+                    {
+                        <div class="mt-3">
+                            <small class="text-muted">Source: @Model.NewsSource</small>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <a asp-action="PublicView" class="btn btn-secondary">Back to News List</a>
+            </div>
+        </div>
+    </div>
+</div> 

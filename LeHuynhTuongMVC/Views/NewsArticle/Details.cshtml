@@ -1,0 +1,76 @@
+@model BusinessObjects.Models.NewsArticle
+
+@{
+    ViewData["Title"] = Model.NewsTitle;
+}
+
+<div class="card shadow">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Article Details</h5>
+        <div>
+            @if (Context.Session.GetInt32("AccountRole") == 1) // Staff can edit/delete all articles
+            {
+                <a asp-action="Edit" asp-route-id="@Model.NewsArticleId" class="btn btn-primary">
+                    <i class="bi bi-pencil"></i> Edit
+                </a>
+                <button type="button" class="btn btn-danger" onclick="confirmDelete('@Model.NewsArticleId')">
+                    <i class="bi bi-trash"></i> Delete
+                </button>
+            }
+            <a asp-action="Index" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Back to List
+            </a>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="row mb-4">
+            <div class="col-md-8">
+                <h2>@Model.NewsTitle</h2>
+                <p class="lead">@Model.Headline</p>
+                <div class="mb-3">
+                    <span class="badge bg-primary">@Model.Category?.CategoryName</span>
+                    @if ((bool)Model.NewsStatus!)
+                    {
+                        <span class="badge bg-success">Published</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-warning">Draft</span>
+                    }
+                </div>
+            </div>
+            <div class="col-md-4 text-md-end">
+                <small class="text-muted">
+                    Created: @Model.CreatedDate?.ToString("MM/dd/yyyy HH:mm")<br>
+                    @if (Model.ModifiedDate.HasValue)
+                    {
+                        <span>Modified: @Model.ModifiedDate?.ToString("MM/dd/yyyy HH:mm")</span>
+                    }
+                </small>
+            </div>
+        </div>
+
+        <div class="mb-4">
+            @Model.NewsContent
+        </div>
+
+        @if (!string.IsNullOrEmpty(Model.NewsSource))
+        {
+            <div class="text-muted">
+                Source: @Model.NewsSource
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function confirmDelete(id) {
+            if (confirm('Are you sure you want to delete this article?')) {
+                $.post('@Url.Action("Delete")', { id: id }, function() {
+                    window.location.href = '@Url.Action("Index")';
+                });
+            }
+        }
+    </script>
+} 

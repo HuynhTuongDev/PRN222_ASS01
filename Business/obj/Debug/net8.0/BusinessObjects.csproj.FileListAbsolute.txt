@@ -1,0 +1,12 @@
+D:\LeHuynhTuong_PRN222_A01.sln\Business\bin\Debug\net8.0\BusinessObjects.deps.json
+D:\LeHuynhTuong_PRN222_A01.sln\Business\bin\Debug\net8.0\BusinessObjects.dll
+D:\LeHuynhTuong_PRN222_A01.sln\Business\bin\Debug\net8.0\BusinessObjects.pdb
+D:\LeHuynhTuong_PRN222_A01.sln\Business\obj\Debug\net8.0\BusinessObjects.csproj.AssemblyReference.cache
+D:\LeHuynhTuong_PRN222_A01.sln\Business\obj\Debug\net8.0\BusinessObjects.GeneratedMSBuildEditorConfig.editorconfig
+D:\LeHuynhTuong_PRN222_A01.sln\Business\obj\Debug\net8.0\BusinessObjects.AssemblyInfoInputs.cache
+D:\LeHuynhTuong_PRN222_A01.sln\Business\obj\Debug\net8.0\BusinessObjects.AssemblyInfo.cs
+D:\LeHuynhTuong_PRN222_A01.sln\Business\obj\Debug\net8.0\BusinessObjects.csproj.CoreCompileInputs.cache
+D:\LeHuynhTuong_PRN222_A01.sln\Business\obj\Debug\net8.0\BusinessObjects.dll
+D:\LeHuynhTuong_PRN222_A01.sln\Business\obj\Debug\net8.0\refint\BusinessObjects.dll
+D:\LeHuynhTuong_PRN222_A01.sln\Business\obj\Debug\net8.0\BusinessObjects.pdb
+D:\LeHuynhTuong_PRN222_A01.sln\Business\obj\Debug\net8.0\ref\BusinessObjects.dll

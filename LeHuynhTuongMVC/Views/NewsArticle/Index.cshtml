@@ -1,0 +1,166 @@
+@model IEnumerable<BusinessObjects.Models.NewsArticle>
+
+@{
+    ViewData["Title"] = "News Articles";
+    var userRole = Context.Session.GetInt32("AccountRole");
+    var userId = Context.Session.GetInt32("AccountId");
+}
+
+<div class="card shadow">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">News Articles</h5>
+        @if (userRole == 1) // Only Staff can create articles
+        {
+            <a asp-action="Create" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> Create New
+            </a>
+        }
+    </div>
+    <div class="card-body">
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <form asp-action="Index" method="get" class="d-flex gap-2">
+                    <input type="text" name="searchString" class="form-control" placeholder="Search by title..." value="@ViewBag.CurrentFilter" />
+                    <button type="submit" class="btn btn-outline-primary">
+                        <i class="bi bi-search"></i> Search
+                    </button>
+                    @if (!string.IsNullOrEmpty(ViewBag.CurrentFilter))
+                    {
+                        <a asp-action="Index" class="btn btn-outline-secondary">Clear</a>
+                    }
+                </form>
+            </div>
+            @if (userRole == 1) // Staff
+            {
+                <div class="col-md-6 text-end">
+                    <a asp-action="History" class="btn btn-outline-info">
+                        <i class="bi bi-clock-history"></i> My News History
+                    </a>
+                </div>
+            }
+        </div>
+
+        @if (Model.Any())
+        {
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Category</th>
+                            <th>Status</th>
+                            <th>Created Date</th>
+                            <th>Created By</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.NewsTitle</td>
+                                <td>@item.Category?.CategoryName</td>
+                                <td>
+                                    @if ((bool)item.NewsStatus!)
+                                    {
+                                        <span class="badge bg-success">Published</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-warning">Draft</span>
+                                    }
+                                </td>
+                                <td>@item.CreatedDate?.ToString("MM/dd/yyyy")</td>
+                                <td>@item.CreatedBy?.AccountName</td>
+                                <td>
+                                    <div class="btn-group">
+                                        <a asp-action="Details" asp-route-id="@item.NewsArticleId" 
+                                           class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                        @if (userRole == 1) // Staff can edit/delete all articles
+                                        {
+                                            <a asp-action="Edit" asp-route-id="@item.NewsArticleId"
+                                               class="btn btn-sm btn-outline-warning">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            <button type="button" class="btn btn-sm btn-outline-danger"
+                                                    onclick="confirmDelete('@item.NewsArticleId', '@item.NewsTitle')">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-info">
+                No news articles found.
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirm Delete</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete the article "<span id="articleTitle"></span>"?</p>
+                <p class="text-danger">This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        let articleIdToDelete = null;
+        const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+
+        function confirmDelete(id, title) {
+            articleIdToDelete = id;
+            document.getElementById('articleTitle').textContent = title;
+            deleteModal.show();
+        }
+
+        document.getElementById('confirmDeleteBtn').addEventListener('click', async function() {
+            if (!articleIdToDelete) return;
+
+            try {
+                const response = await fetch(`/NewsArticle/Delete/${articleIdToDelete}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Reload the page to show updated list
+                    window.location.reload();
+                } else {
+                    alert('Error deleting article: ' + result.message);
+                }
+            } catch (error) {
+                alert('Error deleting article: ' + error.message);
+            } finally {
+                deleteModal.hide();
+            }
+        });
+    </script>
+} 

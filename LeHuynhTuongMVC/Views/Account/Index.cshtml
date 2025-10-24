@@ -1,0 +1,87 @@
+@model IEnumerable<BusinessObjects.Models.SystemAccount>
+
+@{
+    ViewData["Title"] = "Accounts";
+}
+
+<div class="card shadow">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">System Accounts</h5>
+        <a asp-action="Create" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Create New
+        </a>
+    </div>
+    <div class="card-body">
+        @if (Model.Any())
+        {
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.AccountName</td>
+                                <td>@item.AccountEmail</td>
+                                <td>
+                                    @switch (item.AccountRole)
+                                    {
+                                        case 1:
+                                            <span class="badge bg-info">Staff</span>
+                                            break;
+                                        case 2:
+                                            <span class="badge bg-warning">Lecturer</span>
+                                            break;
+                                        case 3:
+                                            <span class="badge bg-danger">Admin</span>
+                                            break;
+                                        default:
+                                            <span class="badge bg-secondary">Unknown</span>
+                                            break;
+                                    }
+                                </td>
+                                <td>
+                                    <div class="btn-group">
+                                        <a asp-action="Edit" asp-route-id="@item.AccountId" 
+                                           class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <button type="button" class="btn btn-sm btn-outline-danger" 
+                                                onclick="confirmDelete(@item.AccountId)">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-info">
+                No accounts found.
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function confirmDelete(id) {
+            if (confirm('Are you sure you want to delete this account?')) {
+                $.post('@Url.Action("Delete")', { id: id }, function() {
+                    window.location.reload();
+                });
+            }
+        }
+    </script>
+} 

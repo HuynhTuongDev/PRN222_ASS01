@@ -1,0 +1,173 @@
+@model LeHuynhTuongMVC.ViewModels.ReportViewModel
+
+@{
+    ViewData["Title"] = "News Statistics Report";
+}
+
+<div class="card shadow">
+    <div class="card-header">
+        <h5 class="mb-0">News Statistics Report</h5>
+    </div>
+    <div class="card-body">
+        <form method="get" class="mb-4">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label for="startDate" class="form-label">Start Date</label>
+                        <input type="date" class="form-control" id="startDate" name="startDate" 
+                               value="@(Model.StartDate?.ToString("yyyy-MM-dd"))">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label for="endDate" class="form-label">End Date</label>
+                        <input type="date" class="form-control" id="endDate" name="endDate" 
+                               value="@(Model.EndDate?.ToString("yyyy-MM-dd"))">
+                    </div>
+                </div>
+                <div class="col-md-4 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-search"></i> Generate Report
+                    </button>
+                </div>
+            </div>
+        </form>
+
+        @if (Model.StartDate.HasValue || Model.EndDate.HasValue)
+        {
+            <div class="row mb-4">
+                <div class="col-md-3">
+                    <div class="card bg-primary text-white">
+                        <div class="card-body">
+                            <h6 class="card-title">Total Articles</h6>
+                            <h2 class="mb-0">@Model.TotalArticles</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-success text-white">
+                        <div class="card-body">
+                            <h6 class="card-title">Published Articles</h6>
+                            <h2 class="mb-0">@Model.PublishedArticles</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-warning text-white">
+                        <div class="card-body">
+                            <h6 class="card-title">Draft Articles</h6>
+                            <h2 class="mb-0">@Model.DraftArticles</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h6 class="mb-0">Articles by Category</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Category</th>
+                                            <th>Count</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in Model.ArticlesByCategory)
+                                        {
+                                            <tr>
+                                                <td>@item.Key</td>
+                                                <td>@item.Value</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h6 class="mb-0">Articles by Author</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Author</th>
+                                            <th>Count</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in Model.ArticlesByAuthor)
+                                        {
+                                            <tr>
+                                                <td>@item.Key</td>
+                                                <td>@item.Value</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h6 class="mb-0">Article List</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Category</th>
+                                    <th>Author</th>
+                                    <th>Status</th>
+                                    <th>Created Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var article in Model.Articles)
+                                {
+                                    <tr>
+                                        <td>@article.NewsTitle</td>
+                                        <td>@article.Category?.CategoryName</td>
+                                        <td>@article.CreatedBy?.AccountName</td>
+                                        <td>
+                                            @if (article.NewsStatus == true)
+                                            {
+                                                <span class="badge bg-success">Published</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-warning">Draft</span>
+                                            }
+                                        </td>
+                                        <td>@(article.CreatedDate?.ToString("dd/MM/yyyy HH:mm"))</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-info">
+                Please select a date range to generate the report.
+            </div>
+        }
+    </div>
+</div> 

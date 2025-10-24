@@ -1,0 +1,47 @@
+@model IEnumerable<BusinessObjects.Models.NewsArticle>
+
+@{
+    ViewData["Title"] = "News Articles";
+}
+
+<div class="container mt-4">
+    <h1>News Articles</h1>
+
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <form asp-action="PublicView" method="get" class="form-inline">
+                <div class="input-group">
+                    <input type="text" name="searchString" value="@ViewBag.CurrentSearch" class="form-control" placeholder="Search articles...">
+                    <select name="categoryId" class="form-control" asp-items="@(new SelectList(ViewBag.Categories, "CategoryId", "CategoryName", ViewBag.CurrentCategory))">
+                        <option value="">All Categories</option>
+                    </select>
+                    <div class="input-group-append">
+                        <button type="submit" class="btn btn-primary">Search</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="row">
+        @foreach (var item in Model)
+        {
+            <div class="col-md-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div class="mb-2">
+                            <span class="badge bg-primary">@item.Category?.CategoryName</span>
+                        </div>
+                        <h5 class="card-title">@item.NewsTitle</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">@item.Headline</h6>
+                        <p class="card-text">@(item.NewsContent?.Length > 200 ? item.NewsContent.Substring(0, 200) + "..." : item.NewsContent)</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <small class="text-muted">@item.CreatedDate?.ToString("dd/MM/yyyy")</small>
+                            <a asp-action="PublicDetails" asp-route-id="@item.NewsArticleId" class="btn btn-primary">Read More</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div> 
